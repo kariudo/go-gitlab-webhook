@@ -2,6 +2,7 @@ package gitlabwebhook
 
 import (
 	"context"
+	"crypto/subtle"
 	"errors"
 	"io"
 	"net/http"
@@ -10,7 +11,10 @@ import (
 	gitlab "gitlab.com/gitlab-org/api/client-go"
 )
 
-var ErrUnsupportedEvent = errors.New("gitlab-webhook: unsupported event type")
+var (
+	ErrUnsupportedEvent = errors.New("gitlab-webhook: unsupported event type")
+	ErrInvalidToken     = errors.New("gitlab-webhook: invalid token")
+)
 
 type Dispatcher struct {
 	buildListeners                      []BuildListener
@@ -260,7 +264,8 @@ func (d *Dispatcher) DispatchWebhook(ctx context.Context, eventType gitlab.Event
 }
 
 type dispatchRequestOptions struct {
-	ctx context.Context
+	ctx   context.Context
+	token string
 }
 
 type DispatchRequestOption func(*dispatchRequestOptions)
@@ -271,6 +276,12 @@ func DispatchRequestWithContext(ctx context.Context) DispatchRequestOption {
 	}
 }
 
+func DispatchRequestWithToken(token string) DispatchRequestOption {
+	return func(o *dispatchRequestOptions) {
+		o.token = token
+	}
+}
+
 func (d *Dispatcher) DispatchRequest(req *http.Request, opts ...DispatchRequestOption) error {
 	o := &dispatchRequestOptions{
 		ctx: req.Context(),
@@ -278,10 +289,23 @@ func (d *Dispatcher) DispatchRequest(req *http.Request, opts ...DispatchRequestO
 	for _, opt := range opts {
 		opt(o)
 	}
+
+	// check token if provided
+	if o.token != "" {
+		token := req.Header.Get("X-Gitlab-Token")
+		// constant time compare to prevent timing attacks on token comparison
+		if subtle.ConstantTimeCompare([]byte(token), []byte(o.token)) != 1 {
+			return ErrInvalidToken
+		}
+	}
+
+	// read payload
 	payload, err := io.ReadAll(req.Body)
 	if err != nil {
 		return err
 	}
+
+	// dispatch webhook
 	return d.DispatchWebhook(o.ctx, gitlab.HookEventType(req), payload)
 }
 
