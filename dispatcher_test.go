@@ -52,6 +52,7 @@ func TestDispatcher_Dispatch(t *testing.T) {
 		{"build", gitlab.EventTypeBuild, "testdata/webhooks/build.json"},                                                           //nolint:lll
 		{"commit comment", gitlab.EventTypeNote, "testdata/webhooks/note_commit.json"},                                             //nolint:lll
 		{"deployment", gitlab.EventTypeDeployment, "testdata/webhooks/deployment.json"},                                            //nolint:lll
+		{"emoji", "Emoji Hook", "testdata/webhooks/emoji.json"},                                                                    //nolint:lll
 		{"feature flag", gitlab.EventTypeFeatureFlag, "testdata/webhooks/feature_flag.json"},                                       //nolint:lll
 		{"group resource access token", gitlab.EventTypeResourceAccessToken, "testdata/webhooks/resource_access_token_group.json"}, //nolint:lll
 		{"issue comment", gitlab.EventTypeNote, "testdata/webhooks/note_issue.json"},                                               //nolint:lll
@@ -97,6 +98,7 @@ var (
 	_ BuildListener                      = (*testListener)(nil)
 	_ CommitCommentListener              = (*testListener)(nil)
 	_ DeploymentListener                 = (*testListener)(nil)
+	_ EmojiListener                      = (*testListener)(nil)
 	_ FeatureFlagListener                = (*testListener)(nil)
 	_ GroupResourceAccessTokenListener   = (*testListener)(nil)
 	_ IssueCommentListener               = (*testListener)(nil)
@@ -130,6 +132,12 @@ func (t *testListener) OnCommitComment(ctx context.Context, event *gitlab.Commit
 func (t *testListener) OnDeployment(ctx context.Context, event *gitlab.DeploymentEvent) error {
 	testDispatcherContext(ctx, t.t)
 	assert.Equal(t.t, "test-deployment-webhooks", event.Project.Name)
+	return nil
+}
+
+func (t *testListener) OnEmoji(ctx context.Context, event *EmojiEvent) error {
+	testDispatcherContext(ctx, t.t)
+	assert.Equal(t.t, "Project Alpha", event.Project.Name)
 	return nil
 }
 
