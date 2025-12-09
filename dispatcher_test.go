@@ -138,6 +138,10 @@ func (t *testListener) OnDeployment(ctx context.Context, event *gitlab.Deploymen
 func (t *testListener) OnEmoji(ctx context.Context, event *EmojiEvent) error {
 	testDispatcherContext(ctx, t.t)
 	assert.Equal(t.t, "Project Alpha", event.Project.Name)
+	assert.NotNil(t.t, event.ObjectAttr.CreatedAt)
+	assert.False(t.t, event.ObjectAttr.CreatedAt.Time.IsZero())
+	assert.NotNil(t.t, event.WorkItem.CreatedAt)
+	assert.False(t.t, event.WorkItem.CreatedAt.Time.IsZero())
 	return nil
 }
 
