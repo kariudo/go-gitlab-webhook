@@ -145,6 +145,10 @@ func (t *testListener) OnEmoji(ctx context.Context, event *EmojiEvent) error {
 		assert.NotNil(t.t, event.WorkItem.CreatedAt)
 		assert.False(t.t, event.WorkItem.CreatedAt.Time.IsZero())
 	}
+	if event.Note != nil {
+		assert.NotNil(t.t, event.Note.CreatedAt)
+		assert.False(t.t, event.Note.CreatedAt.Time.IsZero())
+	}
 	return nil
 }
 
