@@ -8,6 +8,35 @@ import (
 	gitlab "gitlab.com/gitlab-org/api/client-go"
 )
 
+// ID is a custom type that can unmarshal from either string or int
+type ID string
+
+// UnmarshalJSON implements json.Unmarshaler to handle both string and int types for ID
+func (s *ID) UnmarshalJSON(b []byte) error {
+	// Handle null
+	if string(b) == "null" {
+		*s = ""
+		return nil
+	}
+
+	// Try to unmarshal as string
+	var str string
+	if err := json.Unmarshal(b, &str); err == nil {
+		*s = ID(str)
+		return nil
+	}
+
+	// Try to unmarshal as int
+	var i int
+	if err := json.Unmarshal(b, &i); err == nil {
+		*s = ID(fmt.Sprintf("%d", i))
+		return nil
+	}
+
+	// If neither works, return error
+	return fmt.Errorf("StringOrInt: unsupported type %s", string(b))
+}
+
 // FlexibleTime is a custom time type that can unmarshal from multiple time formats
 type FlexibleTime struct {
 	time.Time
@@ -15,8 +44,14 @@ type FlexibleTime struct {
 
 // UnmarshalJSON implements json.Unmarshaler to handle multiple time formats
 func (ft *FlexibleTime) UnmarshalJSON(b []byte) error {
-	// Remove quotes from the JSON string
+	// Handle null values
 	s := string(b)
+	if s == "null" {
+		ft.Time = time.Time{}
+		return nil
+	}
+
+	// Remove quotes from the JSON string
 	if len(s) < 2 {
 		return fmt.Errorf("invalid time value: %s", s)
 	}
@@ -138,8 +173,8 @@ type WorkItem struct {
 	URL              string        `json:"url"`
 	TotalTimeSpent   int           `json:"total_time_spent"`
 	TimeChange       int           `json:"time_change"`
-	AssigneeIDs      []int         `json:"assignee_ids"`
-	AssigneeID       int           `json:"assignee_id"`
+	AssigneeIDs      []ID          `json:"assignee_ids"`
+	AssigneeID       ID            `json:"assignee_id"`
 	Labels           []string      `json:"labels"`
 	State            string        `json:"state"`
 	Severity         string        `json:"severity"`
@@ -176,7 +211,7 @@ type EmojiNote struct {
 
 // EmojiMergeRequest represents a merge request where an emoji was awarded
 type EmojiMergeRequest struct {
-	AssigneeID                  string              `json:"assignee_id"`
+	AssigneeID                  ID                  `json:"assignee_id"`
 	AuthorID                    string              `json:"author_id"`
 	CreatedAt                   FlexibleTime        `json:"created_at"`
 	Description                 string              `json:"description"`
@@ -203,7 +238,7 @@ type EmojiMergeRequest struct {
 	UpdatedAt                   FlexibleTime        `json:"updated_at"`
 	UpdatedByID                 string              `json:"updated_by_id"`
 	PreparedAt                  FlexibleTime        `json:"prepared_at"`
-	AssigneeIDs                 []int64             `json:"assignee_ids"`
+	AssigneeIDs                 []ID                `json:"assignee_ids"`
 	BlockingDiscussionsResolved bool                `json:"blocking_discussions_resolved"`
 	DetailedMergeStatus         string              `json:"detailed_merge_status"`
 	FirstContribution           bool                `json:"first_contribution"`
@@ -286,18 +321,17 @@ type ApprovalRule struct {
 
 // EmojiIssue represents an issue where an emoji was awarded
 type EmojiIssue struct {
-	AuthorID         string       `json:"author_id"`
-	ClosedAt         FlexibleTime `json:"closed_at"`
-	Confidential     bool         `json:"confidential"`
-	CreatedAt        FlexibleTime `json:"created_at"`
-	Description      string       `json:"description"`
-	DiscussionLocked bool         `json:"discussion_locked"`
-	DueDate          FlexibleTime `json:"due_date"`
-	ID               string       `json:"id"`
-	IID              string       `json:"iid"`
-	LastEditedAt     FlexibleTime `json:"last_edited_at"`
-	LastEditedByID   string       `json:"last_edited_by_id"`
-
+	AuthorID                  string       `json:"author_id"`
+	ClosedAt                  FlexibleTime `json:"closed_at"`
+	Confidential              bool         `json:"confidential"`
+	CreatedAt                 FlexibleTime `json:"created_at"`
+	Description               string       `json:"description"`
+	DiscussionLocked          bool         `json:"discussion_locked"`
+	DueDate                   FlexibleTime `json:"due_date"`
+	ID                        string       `json:"id"`
+	IID                       string       `json:"iid"`
+	LastEditedAt              FlexibleTime `json:"last_edited_at"`
+	LastEditedByID            string       `json:"last_edited_by_id"`
 	MilestoneID               int64        `json:"milestone_id"` // TODO: not sure if these should be *int64
 	MovedToID                 int64        `json:"moved_to_id"`
 	DuplicatedToID            int64        `json:"duplicated_to_id"`
@@ -317,8 +351,8 @@ type EmojiIssue struct {
 	HumanTotalTimeSpent       string       `json:"human_total_time_spent"`
 	HumanTimeChange           string       `json:"human_time_change"`
 	HumanTimeEstimate         string       `json:"human_time_estimate"`
-	AssigneeIDs               []string     `json:"assignee_ids"`
-	AssigneeID                string       `json:"assignee_id"`
+	AssigneeIDs               []ID         `json:"assignee_ids"`
+	AssigneeID                ID           `json:"assignee_id"` // TODO: seems like all the assignee ID can actually be either string or int64, so treat it as a string
 	Labels                    []string     `json:"labels"`
 	State                     string       `json:"state"`
 	Severity                  string       `json:"severity"`
