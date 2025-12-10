@@ -132,14 +132,14 @@ type EmojiProject struct {
 
 // EmojiAttributes represents the attributes of the emoji/award
 type EmojiAttributes struct {
-	UserID        int          `json:"user_id"`
-	CreatedAt     FlexibleTime `json:"created_at"`
-	ID            int          `json:"id"`
-	Name          string       `json:"name"`
-	AwardableType string       `json:"awardable_type"`
-	AwardableID   int          `json:"awardable_id"`
-	UpdatedAt     FlexibleTime `json:"updated_at"`
-	AwardedOnURL  string       `json:"awarded_on_url"`
+	UserID        int           `json:"user_id"`
+	CreatedAt     *FlexibleTime `json:"created_at"`
+	ID            int           `json:"id"`
+	Name          string        `json:"name"`
+	AwardableType string        `json:"awardable_type"`
+	AwardableID   int           `json:"awardable_id"`
+	UpdatedAt     *FlexibleTime `json:"updated_at"`
+	AwardedOnURL  string        `json:"awarded_on_url"`
 }
 
 // WorkItem represents a GitLab work item (issue)
@@ -149,7 +149,7 @@ type WorkItem struct {
 	AuthorID         int           `json:"author_id"`
 	ClosedAt         *FlexibleTime `json:"closed_at"`
 	Confidential     bool          `json:"confidential"`
-	CreatedAt        FlexibleTime  `json:"created_at"`
+	CreatedAt        *FlexibleTime `json:"created_at"`
 	Description      string        `json:"description"`
 	DiscussionLocked *bool         `json:"discussion_locked"`
 	DueDate          *string       `json:"due_date"`
@@ -165,7 +165,7 @@ type WorkItem struct {
 	StateID          int           `json:"state_id"`
 	TimeEstimate     int           `json:"time_estimate"`
 	Title            string        `json:"title"`
-	UpdatedAt        FlexibleTime  `json:"updated_at"`
+	UpdatedAt        *FlexibleTime `json:"updated_at"`
 	UpdatedByID      int           `json:"updated_by_id"`
 	Weight           *int          `json:"weight"`
 	HealthStatus     *string       `json:"health_status"`
@@ -186,7 +186,7 @@ type EmojiNote struct {
 	AuthorID         ID                   `json:"author_id"`
 	ChangePosition   *gitlab.NotePosition `json:"change_position"`
 	CommitID         string               `json:"commit_id"`
-	CreatedAt        FlexibleTime         `json:"created_at"`
+	CreatedAt        *FlexibleTime        `json:"created_at"`
 	DiscussionID     string               `json:"discussion_id"`
 	ID               ID                   `json:"id"`
 	Internal         bool                 `json:"internal"`
@@ -197,13 +197,13 @@ type EmojiNote struct {
 	OriginalPosition *gitlab.NotePosition `json:"original_position"`
 	Position         *gitlab.NotePosition `json:"position"`
 	ProjectID        ID                   `json:"project_id"`
-	ResolvedAt       FlexibleTime         `json:"resolved_at"`
+	ResolvedAt       *FlexibleTime        `json:"resolved_at"`
 	ResolvedByID     int64                `json:"resolved_by_id"`
 	ResolvedByPush   bool                 `json:"resolved_by_push"`
 	StDiff           *gitlab.Diff         `json:"st_diff"`
 	System           bool                 `json:"system"`
 	Type             string               `json:"type"`
-	UpdatedAt        FlexibleTime         `json:"updated_at"`
+	UpdatedAt        *FlexibleTime        `json:"updated_at"`
 	UpdatedByID      ID                   `json:"updated_by_id"`
 	Description      string               `json:"description"`
 	URL              string               `json:"url"`
@@ -213,13 +213,13 @@ type EmojiNote struct {
 type EmojiMergeRequest struct {
 	AssigneeID                  ID                  `json:"assignee_id"`
 	AuthorID                    string              `json:"author_id"`
-	CreatedAt                   FlexibleTime        `json:"created_at"`
+	CreatedAt                   *FlexibleTime       `json:"created_at"`
 	Description                 string              `json:"description"`
 	Draft                       bool                `json:"draft"`
 	HeadPipelineID              string              `json:"head_pipeline_id"`
 	ID                          string              `json:"id"`
 	IID                         string              `json:"iid"`
-	LastEditedAt                FlexibleTime        `json:"last_edited_at"`
+	LastEditedAt                *FlexibleTime       `json:"last_edited_at"`
 	LastEditedByID              int64               `json:"last_edited_by_id"`
 	MergeCommitSha              string              `json:"merge_commit_sha"`
 	MergeError                  string              `json:"merge_error"`
@@ -235,9 +235,9 @@ type EmojiMergeRequest struct {
 	TargetProjectID             string              `json:"target_project_id"`
 	TimeEstimate                int                 `json:"time_estimate"`
 	Title                       string              `json:"title"`
-	UpdatedAt                   FlexibleTime        `json:"updated_at"`
+	UpdatedAt                   *FlexibleTime       `json:"updated_at"`
 	UpdatedByID                 string              `json:"updated_by_id"`
-	PreparedAt                  FlexibleTime        `json:"prepared_at"`
+	PreparedAt                  *FlexibleTime       `json:"prepared_at"`
 	AssigneeIDs                 []ID                `json:"assignee_ids"`
 	BlockingDiscussionsResolved bool                `json:"blocking_discussions_resolved"`
 	DetailedMergeStatus         string              `json:"detailed_merge_status"`
@@ -264,7 +264,7 @@ type CommitInfo struct {
 	ID        string        `json:"id"`
 	Message   string        `json:"message"`
 	Title     string        `json:"title"`
-	Timestamp FlexibleTime  `json:"timestamp"`
+	Timestamp *FlexibleTime `json:"timestamp"`
 	URL       string        `json:"url"`
 	Author    *CommitAuthor `json:"author"`
 }
@@ -297,67 +297,67 @@ type ProjectInfo struct {
 
 // ApprovalRule represents an approval rule for a merge request
 type ApprovalRule struct {
-	ID                                  string       `json:"id"`
-	ApprovalsRequired                   int          `json:"approvals_required"`
-	Name                                string       `json:"name"`
-	RuleType                            string       `json:"rule_type"`
-	ReportType                          string       `json:"report_type"`
-	MergeRequestID                      string       `json:"merge_request_id"`
-	Section                             string       `json:"section"`
-	ModifiedFromProjectRule             bool         `json:"modified_from_project_rule"`
-	OrchestrationPolicyIdx              any          `json:"orchestration_policy_idx"` // TODO: not sure what the type should be here
-	VulnerabilitiesAllowed              int          `json:"vulnerabilities_allowed"`
-	Scanners                            []string     `json:"scanners"`
-	SeverityLevels                      []string     `json:"severity_levels"`
-	VulnerabilityStates                 []string     `json:"vulnerability_states"`
-	SecurityOrchestrationPolicyConfigID any          `json:"security_orchestration_policy_configuration_id"`
-	ScanResultPolicyID                  int64        `json:"scan_result_policy_id"` // TODO: it is a guess that this ID types are int64
-	ApplicablePostMerge                 any          `json:"applicable_post_merge"` // TODO: not sure what the type should be here
-	ProjectID                           string       `json:"project_id"`
-	ApprovalPolicyRuleID                int64        `json:"approval_policy_rule_id"` // TODO: it is a guess that this ID types are int64
-	UpdatedAt                           FlexibleTime `json:"updated_at"`
-	CreatedAt                           FlexibleTime `json:"created_at"`
+	ID                                  string        `json:"id"`
+	ApprovalsRequired                   int           `json:"approvals_required"`
+	Name                                string        `json:"name"`
+	RuleType                            string        `json:"rule_type"`
+	ReportType                          string        `json:"report_type"`
+	MergeRequestID                      string        `json:"merge_request_id"`
+	Section                             string        `json:"section"`
+	ModifiedFromProjectRule             bool          `json:"modified_from_project_rule"`
+	OrchestrationPolicyIdx              any           `json:"orchestration_policy_idx"` // TODO: not sure what the type should be here
+	VulnerabilitiesAllowed              int           `json:"vulnerabilities_allowed"`
+	Scanners                            []string      `json:"scanners"`
+	SeverityLevels                      []string      `json:"severity_levels"`
+	VulnerabilityStates                 []string      `json:"vulnerability_states"`
+	SecurityOrchestrationPolicyConfigID any           `json:"security_orchestration_policy_configuration_id"`
+	ScanResultPolicyID                  int64         `json:"scan_result_policy_id"` // TODO: it is a guess that this ID types are int64
+	ApplicablePostMerge                 any           `json:"applicable_post_merge"` // TODO: not sure what the type should be here
+	ProjectID                           string        `json:"project_id"`
+	ApprovalPolicyRuleID                int64         `json:"approval_policy_rule_id"` // TODO: it is a guess that this ID types are int64
+	UpdatedAt                           *FlexibleTime `json:"updated_at"`
+	CreatedAt                           *FlexibleTime `json:"created_at"`
 }
 
 // EmojiIssue represents an issue where an emoji was awarded
 type EmojiIssue struct {
-	AuthorID                  ID           `json:"author_id"`
-	ClosedAt                  FlexibleTime `json:"closed_at"`
-	Confidential              bool         `json:"confidential"`
-	CreatedAt                 FlexibleTime `json:"created_at"`
-	Description               string       `json:"description"`
-	DiscussionLocked          bool         `json:"discussion_locked"`
-	DueDate                   FlexibleTime `json:"due_date"`
-	ID                        ID           `json:"id"`
-	IID                       ID           `json:"iid"`
-	LastEditedAt              FlexibleTime `json:"last_edited_at"`
-	LastEditedByID            ID           `json:"last_edited_by_id"`
-	MilestoneID               int64        `json:"milestone_id"` // TODO: not sure if these should be *int64
-	MovedToID                 int64        `json:"moved_to_id"`
-	DuplicatedToID            int64        `json:"duplicated_to_id"`
-	ProjectID                 ID           `json:"project_id"`
-	RelativePosition          ID           `json:"relative_position"`
-	StateID                   int          `json:"state_id"`
-	TimeEstimate              int          `json:"time_estimate"`
-	Title                     string       `json:"title"`
-	UpdatedAt                 FlexibleTime `json:"updated_at"`
-	UpdatedByID               ID           `json:"updated_by_id"`
-	Weight                    int64        `json:"weight"`
-	HealthStatus              string       `json:"health_status"`
-	Type                      string       `json:"type"`
-	URL                       string       `json:"url"`
-	TotalTimeSpent            int          `json:"total_time_spent"`
-	TimeChange                int          `json:"time_change"`
-	HumanTotalTimeSpent       string       `json:"human_total_time_spent"`
-	HumanTimeChange           string       `json:"human_time_change"`
-	HumanTimeEstimate         string       `json:"human_time_estimate"`
-	AssigneeIDs               []ID         `json:"assignee_ids"`
-	AssigneeID                ID           `json:"assignee_id"` // TODO: seems like all the assignee ID can actually be either string or int64, so treat it as a string
-	Labels                    []string     `json:"labels"`
-	State                     string       `json:"state"`
-	Severity                  string       `json:"severity"`
-	CustomerRelationsContacts []any        `json:"customer_relations_contacts"` // TODO: not sure what type this should be
-	Status                    *IssueStatus `json:"status"`
+	AuthorID                  ID            `json:"author_id"`
+	ClosedAt                  *FlexibleTime `json:"closed_at"`
+	Confidential              bool          `json:"confidential"`
+	CreatedAt                 *FlexibleTime `json:"created_at"`
+	Description               string        `json:"description"`
+	DiscussionLocked          bool          `json:"discussion_locked"`
+	DueDate                   *FlexibleTime `json:"due_date"`
+	ID                        ID            `json:"id"`
+	IID                       ID            `json:"iid"`
+	LastEditedAt              *FlexibleTime `json:"last_edited_at"`
+	LastEditedByID            ID            `json:"last_edited_by_id"`
+	MilestoneID               int64         `json:"milestone_id"` // TODO: not sure if these should be *int64
+	MovedToID                 int64         `json:"moved_to_id"`
+	DuplicatedToID            int64         `json:"duplicated_to_id"`
+	ProjectID                 ID            `json:"project_id"`
+	RelativePosition          ID            `json:"relative_position"`
+	StateID                   int           `json:"state_id"`
+	TimeEstimate              int           `json:"time_estimate"`
+	Title                     string        `json:"title"`
+	UpdatedAt                 *FlexibleTime `json:"updated_at"`
+	UpdatedByID               ID            `json:"updated_by_id"`
+	Weight                    int64         `json:"weight"`
+	HealthStatus              string        `json:"health_status"`
+	Type                      string        `json:"type"`
+	URL                       string        `json:"url"`
+	TotalTimeSpent            int           `json:"total_time_spent"`
+	TimeChange                int           `json:"time_change"`
+	HumanTotalTimeSpent       string        `json:"human_total_time_spent"`
+	HumanTimeChange           string        `json:"human_time_change"`
+	HumanTimeEstimate         string        `json:"human_time_estimate"`
+	AssigneeIDs               []ID          `json:"assignee_ids"`
+	AssigneeID                ID            `json:"assignee_id"` // TODO: seems like all the assignee ID can actually be either string or int64, so treat it as a string
+	Labels                    []string      `json:"labels"`
+	State                     string        `json:"state"`
+	Severity                  string        `json:"severity"`
+	CustomerRelationsContacts []any         `json:"customer_relations_contacts"` // TODO: not sure what type this should be
+	Status                    *IssueStatus  `json:"status"`
 }
 
 // IssueStatus represents the status of an issue
