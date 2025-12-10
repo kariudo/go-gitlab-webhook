@@ -183,20 +183,20 @@ type WorkItem struct {
 
 // EmojiNote represents a note/comment where an emoji was awarded
 type EmojiNote struct {
-	AuthorID         string               `json:"author_id"`
+	AuthorID         ID                   `json:"author_id"`
 	ChangePosition   *gitlab.NotePosition `json:"change_position"`
 	CommitID         string               `json:"commit_id"`
 	CreatedAt        FlexibleTime         `json:"created_at"`
 	DiscussionID     string               `json:"discussion_id"`
-	ID               string               `json:"id"`
+	ID               ID                   `json:"id"`
 	Internal         bool                 `json:"internal"`
 	LineCode         string               `json:"line_code"`
 	Note             string               `json:"note"`
-	NoteableID       string               `json:"noteable_id"`
+	NoteableID       ID                   `json:"noteable_id"`
 	NoteableType     string               `json:"noteable_type"`
 	OriginalPosition *gitlab.NotePosition `json:"original_position"`
 	Position         *gitlab.NotePosition `json:"position"`
-	ProjectID        string               `json:"project_id"`
+	ProjectID        ID                   `json:"project_id"`
 	ResolvedAt       FlexibleTime         `json:"resolved_at"`
 	ResolvedByID     int64                `json:"resolved_by_id"`
 	ResolvedByPush   bool                 `json:"resolved_by_push"`
@@ -204,7 +204,7 @@ type EmojiNote struct {
 	System           bool                 `json:"system"`
 	Type             string               `json:"type"`
 	UpdatedAt        FlexibleTime         `json:"updated_at"`
-	UpdatedByID      int64                `json:"updated_by_id"`
+	UpdatedByID      ID                   `json:"updated_by_id"`
 	Description      string               `json:"description"`
 	URL              string               `json:"url"`
 }
@@ -321,27 +321,27 @@ type ApprovalRule struct {
 
 // EmojiIssue represents an issue where an emoji was awarded
 type EmojiIssue struct {
-	AuthorID                  string       `json:"author_id"`
+	AuthorID                  ID           `json:"author_id"`
 	ClosedAt                  FlexibleTime `json:"closed_at"`
 	Confidential              bool         `json:"confidential"`
 	CreatedAt                 FlexibleTime `json:"created_at"`
 	Description               string       `json:"description"`
 	DiscussionLocked          bool         `json:"discussion_locked"`
 	DueDate                   FlexibleTime `json:"due_date"`
-	ID                        string       `json:"id"`
-	IID                       string       `json:"iid"`
+	ID                        ID           `json:"id"`
+	IID                       ID           `json:"iid"`
 	LastEditedAt              FlexibleTime `json:"last_edited_at"`
-	LastEditedByID            string       `json:"last_edited_by_id"`
+	LastEditedByID            ID           `json:"last_edited_by_id"`
 	MilestoneID               int64        `json:"milestone_id"` // TODO: not sure if these should be *int64
 	MovedToID                 int64        `json:"moved_to_id"`
 	DuplicatedToID            int64        `json:"duplicated_to_id"`
-	ProjectID                 string       `json:"project_id"`
-	RelativePosition          string       `json:"relative_position"`
+	ProjectID                 ID           `json:"project_id"`
+	RelativePosition          ID           `json:"relative_position"`
 	StateID                   int          `json:"state_id"`
 	TimeEstimate              int          `json:"time_estimate"`
 	Title                     string       `json:"title"`
 	UpdatedAt                 FlexibleTime `json:"updated_at"`
-	UpdatedByID               string       `json:"updated_by_id"`
+	UpdatedByID               ID           `json:"updated_by_id"`
 	Weight                    int64        `json:"weight"`
 	HealthStatus              string       `json:"health_status"`
 	Type                      string       `json:"type"`
