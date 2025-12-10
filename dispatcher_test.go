@@ -52,7 +52,8 @@ func TestDispatcher_Dispatch(t *testing.T) {
 		{"build", gitlab.EventTypeBuild, "testdata/webhooks/build.json"},                                                           //nolint:lll
 		{"commit comment", gitlab.EventTypeNote, "testdata/webhooks/note_commit.json"},                                             //nolint:lll
 		{"deployment", gitlab.EventTypeDeployment, "testdata/webhooks/deployment.json"},                                            //nolint:lll
-		{"emoji", "Emoji Hook", "testdata/webhooks/emoji.json"},                                                                    //nolint:lll
+		{"emoji (v2)", "Emoji Hook", "testdata/webhooks/emoji2.json"},                                                              //nolint:lll
+		{"emoji (v1)", "Emoji Hook", "testdata/webhooks/emoji.json"},                                                               //nolint:lll
 		{"feature flag", gitlab.EventTypeFeatureFlag, "testdata/webhooks/feature_flag.json"},                                       //nolint:lll
 		{"group resource access token", gitlab.EventTypeResourceAccessToken, "testdata/webhooks/resource_access_token_group.json"}, //nolint:lll
 		{"issue comment", gitlab.EventTypeNote, "testdata/webhooks/note_issue.json"},                                               //nolint:lll
@@ -140,8 +141,10 @@ func (t *testListener) OnEmoji(ctx context.Context, event *EmojiEvent) error {
 	assert.Equal(t.t, "Project Alpha", event.Project.Name)
 	assert.NotNil(t.t, event.ObjectAttr.CreatedAt)
 	assert.False(t.t, event.ObjectAttr.CreatedAt.Time.IsZero())
-	assert.NotNil(t.t, event.WorkItem.CreatedAt)
-	assert.False(t.t, event.WorkItem.CreatedAt.Time.IsZero())
+	if event.WorkItem != nil {
+		assert.NotNil(t.t, event.WorkItem.CreatedAt)
+		assert.False(t.t, event.WorkItem.CreatedAt.Time.IsZero())
+	}
 	return nil
 }
 
