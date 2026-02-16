@@ -146,38 +146,38 @@ type EmojiAttributes struct {
 // These are not yet defined in the gitlab client library, so we define a
 // simplified version here as they seem a bit different than issues
 type WorkItem struct {
-	AuthorID         int           `json:"author_id"`
-	ClosedAt         *FlexibleTime `json:"closed_at"`
-	Confidential     bool          `json:"confidential"`
-	CreatedAt        *FlexibleTime `json:"created_at"`
-	Description      string        `json:"description"`
-	DiscussionLocked *bool         `json:"discussion_locked"`
-	DueDate          *string       `json:"due_date"`
-	ID               int           `json:"id"`
-	IID              int           `json:"iid"`
-	LastEditedAt     *FlexibleTime `json:"last_edited_at"`
-	LastEditedByID   *int          `json:"last_edited_by_id"`
-	MilestoneID      *int          `json:"milestone_id"`
-	MovedToID        *int          `json:"moved_to_id"`
-	DuplicatedToID   *int          `json:"duplicated_to_id"`
-	ProjectID        int           `json:"project_id"`
-	RelativePosition int           `json:"relative_position"`
-	StateID          int           `json:"state_id"`
-	TimeEstimate     int           `json:"time_estimate"`
-	Title            string        `json:"title"`
-	UpdatedAt        *FlexibleTime `json:"updated_at"`
-	UpdatedByID      int           `json:"updated_by_id"`
-	Weight           *int          `json:"weight"`
-	HealthStatus     *string       `json:"health_status"`
-	Type             string        `json:"type"`
-	URL              string        `json:"url"`
-	TotalTimeSpent   int           `json:"total_time_spent"`
-	TimeChange       int           `json:"time_change"`
-	AssigneeIDs      []ID          `json:"assignee_ids"`
-	AssigneeID       ID            `json:"assignee_id"`
-	Labels           []string      `json:"labels"`
-	State            string        `json:"state"`
-	Severity         string        `json:"severity"`
+	AuthorID         int             `json:"author_id"`
+	ClosedAt         *FlexibleTime   `json:"closed_at"`
+	Confidential     bool            `json:"confidential"`
+	CreatedAt        *FlexibleTime   `json:"created_at"`
+	Description      string          `json:"description"`
+	DiscussionLocked *bool           `json:"discussion_locked"`
+	DueDate          *string         `json:"due_date"`
+	ID               int             `json:"id"`
+	IID              int             `json:"iid"`
+	LastEditedAt     *FlexibleTime   `json:"last_edited_at"`
+	LastEditedByID   *int            `json:"last_edited_by_id"`
+	MilestoneID      *int            `json:"milestone_id"`
+	MovedToID        *int            `json:"moved_to_id"`
+	DuplicatedToID   *int            `json:"duplicated_to_id"`
+	ProjectID        int             `json:"project_id"`
+	RelativePosition int             `json:"relative_position"`
+	StateID          int             `json:"state_id"`
+	TimeEstimate     int             `json:"time_estimate"`
+	Title            string          `json:"title"`
+	UpdatedAt        *FlexibleTime   `json:"updated_at"`
+	UpdatedByID      int             `json:"updated_by_id"`
+	Weight           *int            `json:"weight"`
+	HealthStatus     *string         `json:"health_status"`
+	Type             string          `json:"type"`
+	URL              string          `json:"url"`
+	TotalTimeSpent   int             `json:"total_time_spent"`
+	TimeChange       int             `json:"time_change"`
+	AssigneeIDs      []ID            `json:"assignee_ids"`
+	AssigneeID       ID              `json:"assignee_id"`
+	Labels           []*gitlab.Label `json:"labels"`
+	State            string          `json:"state"`
+	Severity         string          `json:"severity"`
 	// ... add other fields as needed
 }
 
@@ -245,7 +245,7 @@ type EmojiMergeRequest struct {
 	HumanTimeChange             string              `json:"human_time_change"`
 	HumanTimeEstimate           string              `json:"human_time_estimate"`
 	HumanTotalTimeSpent         string              `json:"human_total_time_spent"`
-	Labels                      []string            `json:"labels"`
+	Labels                      []*gitlab.Label     `json:"labels"`
 	LastCommit                  *CommitInfo         `json:"last_commit"`
 	ReviewerIDs                 []string            `json:"reviewer_ids"`
 	Source                      *ProjectInfo        `json:"source"`
@@ -321,43 +321,43 @@ type ApprovalRule struct {
 
 // EmojiIssue represents an issue where an emoji was awarded
 type EmojiIssue struct {
-	AuthorID                  ID            `json:"author_id"`
-	ClosedAt                  *FlexibleTime `json:"closed_at"`
-	Confidential              bool          `json:"confidential"`
-	CreatedAt                 *FlexibleTime `json:"created_at"`
-	Description               string        `json:"description"`
-	DiscussionLocked          bool          `json:"discussion_locked"`
-	DueDate                   *FlexibleTime `json:"due_date"`
-	ID                        ID            `json:"id"`
-	IID                       ID            `json:"iid"`
-	LastEditedAt              *FlexibleTime `json:"last_edited_at"`
-	LastEditedByID            ID            `json:"last_edited_by_id"`
-	MilestoneID               int64         `json:"milestone_id"` // TODO: not sure if these should be *int64
-	MovedToID                 int64         `json:"moved_to_id"`
-	DuplicatedToID            int64         `json:"duplicated_to_id"`
-	ProjectID                 ID            `json:"project_id"`
-	RelativePosition          ID            `json:"relative_position"`
-	StateID                   int           `json:"state_id"`
-	TimeEstimate              int           `json:"time_estimate"`
-	Title                     string        `json:"title"`
-	UpdatedAt                 *FlexibleTime `json:"updated_at"`
-	UpdatedByID               ID            `json:"updated_by_id"`
-	Weight                    int64         `json:"weight"`
-	HealthStatus              string        `json:"health_status"`
-	Type                      string        `json:"type"`
-	URL                       string        `json:"url"`
-	TotalTimeSpent            int           `json:"total_time_spent"`
-	TimeChange                int           `json:"time_change"`
-	HumanTotalTimeSpent       string        `json:"human_total_time_spent"`
-	HumanTimeChange           string        `json:"human_time_change"`
-	HumanTimeEstimate         string        `json:"human_time_estimate"`
-	AssigneeIDs               []ID          `json:"assignee_ids"`
-	AssigneeID                ID            `json:"assignee_id"` // TODO: seems like all the assignee ID can actually be either string or int64, so treat it as a string
-	Labels                    []string      `json:"labels"`
-	State                     string        `json:"state"`
-	Severity                  string        `json:"severity"`
-	CustomerRelationsContacts []any         `json:"customer_relations_contacts"` // TODO: not sure what type this should be
-	Status                    *IssueStatus  `json:"status"`
+	AuthorID                  ID              `json:"author_id"`
+	ClosedAt                  *FlexibleTime   `json:"closed_at"`
+	Confidential              bool            `json:"confidential"`
+	CreatedAt                 *FlexibleTime   `json:"created_at"`
+	Description               string          `json:"description"`
+	DiscussionLocked          bool            `json:"discussion_locked"`
+	DueDate                   *FlexibleTime   `json:"due_date"`
+	ID                        ID              `json:"id"`
+	IID                       ID              `json:"iid"`
+	LastEditedAt              *FlexibleTime   `json:"last_edited_at"`
+	LastEditedByID            ID              `json:"last_edited_by_id"`
+	MilestoneID               int64           `json:"milestone_id"` // TODO: not sure if these should be *int64
+	MovedToID                 int64           `json:"moved_to_id"`
+	DuplicatedToID            int64           `json:"duplicated_to_id"`
+	ProjectID                 ID              `json:"project_id"`
+	RelativePosition          ID              `json:"relative_position"`
+	StateID                   int             `json:"state_id"`
+	TimeEstimate              int             `json:"time_estimate"`
+	Title                     string          `json:"title"`
+	UpdatedAt                 *FlexibleTime   `json:"updated_at"`
+	UpdatedByID               ID              `json:"updated_by_id"`
+	Weight                    int64           `json:"weight"`
+	HealthStatus              string          `json:"health_status"`
+	Type                      string          `json:"type"`
+	URL                       string          `json:"url"`
+	TotalTimeSpent            int             `json:"total_time_spent"`
+	TimeChange                int             `json:"time_change"`
+	HumanTotalTimeSpent       string          `json:"human_total_time_spent"`
+	HumanTimeChange           string          `json:"human_time_change"`
+	HumanTimeEstimate         string          `json:"human_time_estimate"`
+	AssigneeIDs               []ID            `json:"assignee_ids"`
+	AssigneeID                ID              `json:"assignee_id"` // TODO: seems like all the assignee ID can actually be either string or int64, so treat it as a string
+	Labels                    []*gitlab.Label `json:"labels"`
+	State                     string          `json:"state"`
+	Severity                  string          `json:"severity"`
+	CustomerRelationsContacts []any           `json:"customer_relations_contacts"` // TODO: not sure what type this should be
+	Status                    *IssueStatus    `json:"status"`
 }
 
 // IssueStatus represents the status of an issue
